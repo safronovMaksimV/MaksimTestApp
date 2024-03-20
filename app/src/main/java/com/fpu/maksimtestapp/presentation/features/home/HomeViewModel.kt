@@ -1,7 +1,6 @@
 package com.fpu.maksimtestapp.presentation.features.home
 
 import android.nfc.tech.MifareUltralight
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -18,7 +17,6 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCompletedChallengesUseCase: GetCompletedChallengesUseCase,
-    savedStateHandle: SavedStateHandle,
 ) : BaseViewModel<HomeScreenContract.State, HomeScreenContract.Event, HomeScreenContract.Effect>() {
 
     private val mutableRefreshState = MutableStateFlow(true)
@@ -28,7 +26,8 @@ class HomeViewModel @Inject constructor(
 
     override fun handleEvent(event: HomeScreenContract.Event) {
         when (event) {
-            else -> {}
+            is HomeScreenContract.Event.RefreshScreen -> refreshScreen()
+            is HomeScreenContract.Event.SetRefreshing -> setRefreshing(event.isRefreshing)
         }
     }
 
@@ -51,11 +50,11 @@ class HomeViewModel @Inject constructor(
         setRefreshing(false)
     }
 
-    fun refreshScreen() {
+    private fun refreshScreen() {
         initScreen()
     }
 
-    fun setRefreshing(refresh: Boolean) {
+    private fun setRefreshing(refresh: Boolean) {
         launch {
             mutableRefreshState.emit(refresh)
         }

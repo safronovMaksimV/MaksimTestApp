@@ -3,7 +3,6 @@ package com.fpu.maksimtestapp.domain.usecase
 import com.fpu.maksimtestapp.domain.model.ChallengeDomain
 import com.fpu.maksimtestapp.domain.repository.ChallengesRepository
 import javax.inject.Inject
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 interface GetCompletedChallengesUseCase {
     suspend fun getCompletedChallenges(

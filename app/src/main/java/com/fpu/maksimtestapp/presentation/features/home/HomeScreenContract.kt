@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import com.fpu.maksimtestapp.base.UiEffect
 import com.fpu.maksimtestapp.base.UiEvent
 import com.fpu.maksimtestapp.base.UiState
-import com.fpu.maksimtestapp.domain.model.ChallengeDomain
 import com.fpu.maksimtestapp.presentation.model.UIChallenge
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -23,7 +22,11 @@ class HomeScreenContract {
         }
     }
 
-    sealed interface Event : UiEvent
+    sealed interface Event : UiEvent {
+        data object RefreshScreen : Event
+
+        data class SetRefreshing(val isRefreshing: Boolean) : Event
+    }
 
     sealed interface Effect : UiEffect
 

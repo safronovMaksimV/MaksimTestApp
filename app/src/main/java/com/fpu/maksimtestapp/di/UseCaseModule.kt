@@ -1,6 +1,8 @@
 package com.fpu.maksimtestapp.di
 
 import com.fpu.maksimtestapp.domain.repository.ChallengesRepository
+import com.fpu.maksimtestapp.domain.usecase.GetChallengeDetailsUseCase
+import com.fpu.maksimtestapp.domain.usecase.GetChallengeDetailsUseCaseImpl
 import com.fpu.maksimtestapp.domain.usecase.GetCompletedChallengesUseCase
 import com.fpu.maksimtestapp.domain.usecase.GetCompletedChallengesUseCaseImpl
 import dagger.Module
@@ -14,4 +16,8 @@ class UseCaseModule {
     @Provides
     fun provideGetCompletedChallengesUseCase(repository: ChallengesRepository): GetCompletedChallengesUseCase =
         GetCompletedChallengesUseCaseImpl(repository)
+
+    @Provides
+    fun provideGetChallengeDetailsUseCase(repository: ChallengesRepository): GetChallengeDetailsUseCase =
+        GetChallengeDetailsUseCaseImpl(repository)
 }

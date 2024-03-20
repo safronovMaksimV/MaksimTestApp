@@ -17,30 +17,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,10 +52,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.fpu.maksimtestapp.presentation.model.UIChallenge
+import com.fpu.maksimtestapp.ui.components.ChallengesLoadingContent
 import com.fpu.maksimtestapp.ui.theme.bodySmall
 import com.fpu.maksimtestapp.ui.theme.cardBorderColor
 import com.fpu.maksimtestapp.ui.theme.shimmer1
 import com.fpu.maksimtestapp.ui.theme.shimmer2
+import com.fpu.maksimtestapp.ui.theme.titleLarge
 import com.fpu.maksimtestapp.ui.theme.titleMedium
 
 const val CHALLENGE_SHIMMER_REPEAT = 3
@@ -89,24 +84,23 @@ fun HomeScreen(
     onEvent: (HomeScreenContract.Event) -> Unit,
     onNavigateToChallengeDetails: (String) -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val isRefreshing by viewModel.refreshState.collectAsState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.refreshScreen() }
+        onRefresh = { onEvent(HomeScreenContract.Event.RefreshScreen) }
     )
     val challenges = uiState.challengeList.collectAsLazyPagingItems()
     Column {
-        TopBar(scrollBehavior = scrollBehavior)
+        TopBar()
         Box(
             modifier = Modifier
                 .pullRefresh(pullRefreshState)
         ) {
             if (!challenges.loadState.prepend.endOfPaginationReached) {
-                viewModel.setRefreshing(true)
+                onEvent(HomeScreenContract.Event.SetRefreshing(true))
                 ChallengesLoadingContent()
             } else {
-                viewModel.setRefreshing(false)
+                onEvent(HomeScreenContract.Event.SetRefreshing(false))
                 LazyColumn(
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
@@ -196,25 +190,6 @@ fun CheckInsListChallengeLoadingState(brush: Brush) {
     }
 }
 
-@Composable
-private fun ChallengesLoadingContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .padding(horizontal = 10.dp)
-            .navigationBarsPadding()
-            .imePadding()
-            .fillMaxSize(),
-    ) {
-        ShimmerAnimation { brush ->
-            Spacer(modifier = Modifier.height(30.dp))
-            repeat(CHALLENGE_SHIMMER_REPEAT * 6) {
-                CheckInsListChallengeLoadingState(brush)
-                Spacer(Modifier.height(30.dp))
-            }
-        }
-    }
-}
-
 @Suppress("MagicNumber")
 @Composable
 fun ShimmerAnimation(
@@ -249,8 +224,8 @@ fun ShimmerAnimation(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
-    CenterAlignedTopAppBar(
+fun TopBar() {
+    TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
@@ -259,11 +234,11 @@ fun TopBar(scrollBehavior: TopAppBarScrollBehavior) {
             Text(
                 "Completed challenges",
                 maxLines = 1,
+                style = titleLarge,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth()
             )
         },
-        scrollBehavior = scrollBehavior
     )
 }
 

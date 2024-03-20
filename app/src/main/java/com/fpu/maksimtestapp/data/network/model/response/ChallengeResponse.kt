@@ -10,11 +10,11 @@ data class ChallengeResponse(
     @SerializedName("totalItems")
     val totalItems: Long?,
     @SerializedName("data")
-    val challenges: List<Challenge>?
+    val commonChallenges: List<CommonChallenge>?
 )
 
 @Keep
-data class Challenge(
+data class CommonChallenge(
     @SerializedName("id")
     val id: String?,
     @SerializedName("name")

@@ -1,7 +1,7 @@
 package com.fpu.maksimtestapp.di
 
 import com.fpu.maksimtestapp.BuildConfig
-import com.fpu.maksimtestapp.data.network.CompletedApi
+import com.fpu.maksimtestapp.data.network.ChallengesApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -42,7 +42,7 @@ class NetworkModule {
     fun provideRetrofit(
         gson: Gson,
         okHttpClient: OkHttpClient
-    ): CompletedApi = Retrofit.Builder()
+    ): ChallengesApi = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .client(okHttpClient)
