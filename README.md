@@ -24,6 +24,16 @@ The application consists of two screens:
 - Jetpack Compose
 - Clean Architecture principles
 
+## App Preview
+
+- Main screen loads Voile's challenges
+- Details Challenge screen - opens when user press on any Challenge card from Main screen
+
+
+https://github.com/safronovMaksimV/MaksimTestApp/assets/82446390/ce196a4b-9621-4a6d-9db2-a02e9861c5a9
+
+
+
 ## Installation
 
 To run the application, follow these steps:
