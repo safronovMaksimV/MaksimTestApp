@@ -35,14 +35,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +54,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
+import com.fpu.maksimtestapp.R
 import com.fpu.maksimtestapp.presentation.model.UIChallenge
 import com.fpu.maksimtestapp.ui.components.ChallengesLoadingContent
 import com.fpu.maksimtestapp.ui.theme.bodySmall
@@ -70,7 +74,6 @@ fun HomeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         uiState = uiState,
-        viewModel = viewModel,
         onEvent = viewModel::setEvent,
         onNavigateToChallengeDetails = onNavigateToChallengeDetails
     )
@@ -80,11 +83,10 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     uiState: HomeScreenContract.State,
-    viewModel: HomeViewModel,
     onEvent: (HomeScreenContract.Event) -> Unit,
     onNavigateToChallengeDetails: (String) -> Unit
 ) {
-    val isRefreshing by viewModel.refreshState.collectAsState()
+    var isRefreshing by remember { mutableStateOf(uiState.isLoading) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = { onEvent(HomeScreenContract.Event.RefreshScreen) }
@@ -96,6 +98,7 @@ fun HomeScreen(
             modifier = Modifier
                 .pullRefresh(pullRefreshState)
         ) {
+            isRefreshing = uiState.isLoading
             if (!challenges.loadState.prepend.endOfPaginationReached) {
                 onEvent(HomeScreenContract.Event.SetRefreshing(true))
                 ChallengesLoadingContent()
@@ -105,6 +108,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = 10.dp)
                         .padding(top = 10.dp)
+                        .testTag(stringResource(id = R.string.scrollable_layout_tag))
                 ) {
                     items(
                         count = challenges.itemCount,
@@ -119,7 +123,9 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.padding(10.dp))
                         }
                     }
-                    if (challenges.loadState.append is LoadState.Loading || challenges.loadState.refresh is LoadState.Loading) {
+                    if (challenges.loadState.append is LoadState.Loading ||
+                        challenges.loadState.refresh is LoadState.Loading
+                    ) {
                         item(key = "loading") {
                             ShimmerAnimation { brush ->
                                 Spacer(modifier = Modifier.height(20.dp))
@@ -135,7 +141,9 @@ fun HomeScreen(
             PullRefreshIndicator(
                 isRefreshing,
                 pullRefreshState,
-                Modifier.align(Alignment.TopCenter)
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .testTag(stringResource(id = R.string.loading_refresh_indicator_tag))
             )
         }
     }
@@ -232,7 +240,7 @@ fun TopBar() {
         ),
         title = {
             Text(
-                "Completed challenges",
+                stringResource(id = R.string.home_screen_title),
                 maxLines = 1,
                 style = titleLarge,
                 overflow = TextOverflow.Ellipsis,

@@ -24,12 +24,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,7 +44,6 @@ import com.fpu.maksimtestapp.ui.theme.bodyMedium
 import com.fpu.maksimtestapp.ui.theme.cardBorderColor
 import com.fpu.maksimtestapp.ui.theme.titleLarge
 import com.fpu.maksimtestapp.ui.theme.titleMedium
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun ChallengeDetailsRoute(
@@ -57,9 +60,7 @@ fun ChallengeDetailsRoute(
         uiState = uiState,
         onEvent = viewModel::setEvent,
         onBackClick = onBackClick,
-        isRefreshingState = viewModel.refreshState,
-
-        )
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -68,9 +69,8 @@ fun CardDetailsScreen(
     uiState: ChallengeDetailsScreenContract.State,
     onEvent: (ChallengeDetailsScreenContract.Event) -> Unit,
     onBackClick: () -> Unit,
-    isRefreshingState: StateFlow<Boolean>,
 ) {
-    val isRefreshing by isRefreshingState.collectAsState()
+    var isRefreshing by remember { mutableStateOf(uiState.isLoading) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = {
@@ -90,11 +90,13 @@ fun CardDetailsScreen(
             modifier = Modifier
                 .pullRefresh(pullRefreshState)
         ) {
+            isRefreshing = uiState.isLoading
             if (uiState.isLoading) {
                 ChallengesLoadingContent()
             } else {
                 LazyColumn(
                     modifier = Modifier
+                        .testTag(stringResource(id = R.string.scrollable_layout_tag))
                         .padding(horizontal = 10.dp)
                         .fillMaxSize()
                 ) {
@@ -102,7 +104,7 @@ fun CardDetailsScreen(
                         if (challenge.category.isNotBlank()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Challenge Category",
+                                    title = stringResource(id = R.string.challenge_category_title),
                                     content = challenge.category
                                 )
                             }
@@ -111,7 +113,7 @@ fun CardDetailsScreen(
                         if (challenge.description.isNotBlank()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Challenge Description",
+                                    title = stringResource(id = R.string.challenge_description_title),
                                     content = challenge.description
                                 )
                             }
@@ -120,7 +122,7 @@ fun CardDetailsScreen(
                         if (challenge.tags.isNotEmpty()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Challenge Tags",
+                                    title = stringResource(id = R.string.challenge_tags_title),
                                     content = challenge.tags.joinToString(
                                         separator = ", "
                                     ) { it }
@@ -131,7 +133,7 @@ fun CardDetailsScreen(
                         if (challenge.languages.isNotEmpty()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Challenge Languages",
+                                    title = stringResource(id = R.string.challenge_languages_title),
                                     content = challenge.languages.joinToString(
                                         separator = ", "
                                     ) { it }
@@ -142,7 +144,7 @@ fun CardDetailsScreen(
                         if (challenge.rank.name.isNotBlank()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Rank",
+                                    title = stringResource(id = R.string.challenge_rank_title),
                                     content = challenge.getRankString()
                                 )
                             }
@@ -151,7 +153,7 @@ fun CardDetailsScreen(
                         if (challenge.createdBy.username.isNotBlank()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Created By",
+                                    title = stringResource(id = R.string.challenge_created_by_title),
                                     content = challenge.getCreatedByString()
                                 )
                             }
@@ -160,7 +162,7 @@ fun CardDetailsScreen(
                         if (challenge.approvedBy.username.isNotBlank()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Approved By",
+                                    title = stringResource(id = R.string.challenge_approved_by_title),
                                     content = challenge.getApprovedByString()
                                 )
                             }
@@ -168,28 +170,28 @@ fun CardDetailsScreen(
 
                         item {
                             ChallengeDetailsCard(
-                                title = "Total Attempts",
+                                title = stringResource(id = R.string.challenge_total_attempts_title),
                                 content = challenge.totalAttempts.toString()
                             )
                         }
 
                         item {
                             ChallengeDetailsCard(
-                                title = "Total Completed",
+                                title = stringResource(id = R.string.challenge_total_completed_title),
                                 content = challenge.totalCompleted.toString()
                             )
                         }
 
                         item {
                             ChallengeDetailsCard(
-                                title = "Total Stars",
+                                title = stringResource(id = R.string.challenge_total_stars_title),
                                 content = challenge.totalStars.toString()
                             )
                         }
 
                         item {
                             ChallengeDetailsCard(
-                                title = "Vote Score",
+                                title = stringResource(id = R.string.challenge_vote_score_title),
                                 content = challenge.voteScore.toString()
                             )
                         }
@@ -198,7 +200,7 @@ fun CardDetailsScreen(
                         if (!publishedAt.isNullOrEmpty()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Published At",
+                                    title = stringResource(id = R.string.challenge_published_at_title),
                                     content = publishedAt
                                 )
                             }
@@ -208,7 +210,7 @@ fun CardDetailsScreen(
                         if (!approvedAt.isNullOrEmpty()) {
                             item {
                                 ChallengeDetailsCard(
-                                    title = "Approved At",
+                                    title = stringResource(id = R.string.challenge_approved_at_title),
                                     content = approvedAt
                                 )
                             }
@@ -220,7 +222,9 @@ fun CardDetailsScreen(
             PullRefreshIndicator(
                 isRefreshing,
                 pullRefreshState,
-                Modifier.align(Alignment.TopCenter)
+                Modifier
+                    .align(Alignment.TopCenter)
+                    .testTag(stringResource(id = R.string.loading_refresh_indicator_tag))
             )
         }
     }

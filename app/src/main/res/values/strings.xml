@@ -1,4 +1,23 @@
 <resources>
     <string name="app_name">MaksimTestApp</string>
     <string name="home_tab_title">Home</string>
+    <string name="home_screen_title">Completed challenges</string>
+    <string name="challenge_category_title">Challenge Category</string>
+    <string name="challenge_description_title">Challenge Description</string>
+    <string name="challenge_tags_title">Challenge Tags</string>
+    <string name="challenge_languages_title">Challenge Languages</string>
+    <string name="challenge_rank_title">Rank</string>
+    <string name="challenge_created_by_title">Created By</string>
+    <string name="challenge_approved_by_title">Approved By</string>
+    <string name="challenge_total_attempts_title">Total Attempts</string>
+    <string name="challenge_total_completed_title">Total Completed</string>
+    <string name="challenge_total_stars_title">Total Stars</string>
+    <string name="challenge_vote_score_title">Vote Score</string>
+    <string name="challenge_published_at_title">Published At</string>
+    <string name="challenge_approved_at_title">Approved At</string>
+
+
+    <string name="scrollable_layout_tag">Scrollable Layout Tag</string>
+    <string name="loading_layout_tag">Loading Layout Tag</string>
+    <string name="loading_refresh_indicator_tag">Loading Refresh Indicator Layout Tag</string>
 </resources>

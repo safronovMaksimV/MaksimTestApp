@@ -6,17 +6,12 @@ import com.fpu.maksimtestapp.presentation.mapper.toUIChallengeDetails
 import com.fpu.maksimtestapp.utils.subscribe
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ChallengeDetailsViewModel @Inject constructor(
     private val getChallengeDetailsUseCase: GetChallengeDetailsUseCase
 ) : BaseViewModel<ChallengeDetailsScreenContract.State, ChallengeDetailsScreenContract.Event, ChallengeDetailsScreenContract.Effect>() {
-
-    private val mutableRefreshState = MutableStateFlow(true)
-    val refreshState = mutableRefreshState.asStateFlow()
 
     override fun createInitialState() = ChallengeDetailsScreenContract.State.initial()
 
@@ -25,13 +20,15 @@ class ChallengeDetailsViewModel @Inject constructor(
             is ChallengeDetailsScreenContract.Event.FetchChallengeInfoById -> fetchChallengeInfoById(
                 event.id
             )
-            is ChallengeDetailsScreenContract.Event.SetRefreshing -> setRefreshing(event.isRefreshing)
+
+            is ChallengeDetailsScreenContract.Event.SetRefreshing -> setState {
+                copy(isLoading = event.isRefreshing)
+            }
         }
     }
 
     private fun fetchChallengeInfoById(id: String) {
         launch {
-            setRefreshing(true)
             setState { copy(isLoading = true) }
             getChallengeDetailsUseCase(id).subscribe(
                 this,
@@ -47,15 +44,8 @@ class ChallengeDetailsViewModel @Inject constructor(
                 },
                 complete = {
                     setState { copy(isLoading = false) }
-                    setRefreshing(false)
                 }
             )
-        }
-    }
-
-    private fun setRefreshing(refresh: Boolean) {
-        launch {
-            mutableRefreshState.emit(refresh)
         }
     }
 }

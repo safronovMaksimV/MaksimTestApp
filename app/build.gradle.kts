@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.fpu.maksimtestapp.utils.MainTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -87,6 +87,10 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.navigation.testing)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.ui.test.junit4.android)
+    implementation(libs.androidx.test.runner)
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.retrofit)
@@ -96,13 +100,16 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     implementation(libs.androidx.graphics.shapes.android)
+    implementation(libs.hilt.android.testing)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.testManifest)
+    kaptAndroidTest(libs.hilt.android.compiler)
+    testImplementation(libs.accompanist.testharness)
+    testImplementation(libs.hilt.android.testing)
+
+
+    androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.androidx.navigation.testing)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.accompanist.testharness)
+    androidTestImplementation(libs.hilt.android.testing)
 }

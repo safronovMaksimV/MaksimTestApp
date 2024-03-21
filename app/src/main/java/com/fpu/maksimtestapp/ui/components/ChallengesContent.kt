@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.fpu.maksimtestapp.R
 import com.fpu.maksimtestapp.presentation.features.home.CHALLENGE_SHIMMER_REPEAT
 import com.fpu.maksimtestapp.presentation.features.home.CheckInsListChallengeLoadingState
 import com.fpu.maksimtestapp.presentation.features.home.ShimmerAnimation
@@ -21,6 +24,7 @@ fun ChallengesLoadingContent(modifier: Modifier = Modifier) {
             .padding(horizontal = 10.dp)
             .navigationBarsPadding()
             .imePadding()
+            .testTag(stringResource(id = R.string.loading_layout_tag))
             .fillMaxSize(),
     ) {
         ShimmerAnimation { brush ->
