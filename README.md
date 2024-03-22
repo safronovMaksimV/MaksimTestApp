@@ -1,6 +1,7 @@
 # Codewars Challenge Android App
 
 This Android application is a demonstration of architecture, design patterns, and usage of Android UI components. The app utilizes the Codewars API (https://dev.codewars.com/#rest-api).
+The application has been designed with future expansion in mind as typical app with Bottom NavBar and other common features, which can be implemented in the future.
 
 ## Screens
 
